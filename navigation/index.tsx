@@ -3,19 +3,16 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { FontAwesome } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Feather, FontAwesome } from '@expo/vector-icons';
+
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import { ColorSchemeName, Pressable, Text, View, Image, useWindowDimensions } from 'react-native';
 
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
-import ModalScreen from '../screens/ModalScreen';
+
 import NotFoundScreen from '../screens/NotFoundScreen';
-import TabOneScreen from '../screens/HomeScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
+import HomeScreen from '../screens/HomeScreen';
 import ChatRoomScreen from '../screens/ChatRoomScreen';
 
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
@@ -39,66 +36,98 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="ChatRoom" component={ChatRoomScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+    <Stack.Navigator>
+      <Stack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{ headerTitle: HomeHeader }}
+      />
+      <Stack.Screen name='ChatRoom'
+        component={ChatRoomScreen}
+        options={{ headerTitle: ChatRoomHeader, }}
 
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-      </Stack.Group>
+      />
+      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
     </Stack.Navigator>
   );
+}
+
+const HomeHeader = (props) => {
+
+  const { width } = useWindowDimensions();
+  return (
+    <View
+      style={{
+        width,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+
+      }}
+    >
+      <Image
+        source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/doro-sp.appspot.com/o/MALKANGIRI%2FEDIBLES%2FDKPNAIUZKAZXU6KG17IJXMK6YBZ2%2F5a2736c0-6039-40a3-b.jpg?alt=media&token=2c80a966-1548-4e77-9df6-a3434e0a35e1' }}
+        style={{ width: 40, height: 40, borderRadius: 20 }}
+      />
+      <Text style={{ flex: 1, textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>BlueBerry</Text>
+      <View style={{ flexDirection: 'row' }}>
+        <Feather name="camera" size={24} color='black'
+          style={{ marginRight: 15 }}
+        />
+        <Feather name="edit-2" size={24} color='black'
+          style={{ marginRight: 15 }}
+        />
+      </View>
+    </View>
+  )
+}
+
+const ChatRoomHeader = (props) => {
+
+  const { width } = useWindowDimensions();
+  return (
+    <View
+      style={{
+        width: width - 70,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+
+
+      }}
+    >
+      <Image
+        source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/doro-sp.appspot.com/o/MALKANGIRI%2FEDIBLES%2FDKPNAIUZKAZXU6KG17IJXMK6YBZ2%2F5a2736c0-6039-40a3-b.jpg?alt=media&token=2c80a966-1548-4e77-9df6-a3434e0a35e1' }}
+        style={{ width: 40, height: 40, borderRadius: 20 }}
+      />
+      <Text
+        style={{
+          flex: 1,
+          textAlign: 'center',
+          fontSize: 20,
+          fontWeight: 'bold'
+        }}>BlueBerry</Text>
+      <View style={{ flexDirection: 'row' }}>
+        <Feather name="video" size={24} color='black'
+          style={{ marginRight: 15 }}
+        />
+        <Feather name="phone" size={24} color='black'
+          style={{ marginRight: 15 }}
+        />
+        <Feather name="menu" size={24} color='black'
+          style={{ marginRight: 15 }}
+        />
+      </View>
+    </View>
+  )
 }
 
 /**
  * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
-const BottomTab = createBottomTabNavigator<RootTabParamList>();
-
-function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <BottomTab.Navigator
-      initialRouteName="TabOne"
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
-      }}>
-      <BottomTab.Screen
-        name="TabOne"
-        component={TabOneScreen}
-        options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Modal')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <FontAwesome
-                name="info-circle"
-                size={25}
-                color={Colors[colorScheme].text}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
-        })}
-      />
-      <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoScreen}
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-    </BottomTab.Navigator>
-  );
-}
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
